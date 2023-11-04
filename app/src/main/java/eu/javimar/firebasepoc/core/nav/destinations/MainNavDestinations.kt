@@ -5,7 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import eu.javimar.firebasepoc.core.nav.screens.BottomGraphScreens
 import eu.javimar.firebasepoc.features.profile.ProfileMain
-import eu.javimar.firebasepoc.features.storage.StorageScreen
+import eu.javimar.firebasepoc.features.storage.StorageMain
 
 fun NavGraphBuilder.profileDestination(
     navController: NavHostController
@@ -25,6 +25,8 @@ fun NavGraphBuilder.storageDestination(
     composable(
         route = BottomGraphScreens.Storage.route
     ) {
-        StorageScreen()
+        StorageMain(
+            navController = navController
+        )
     }
 }

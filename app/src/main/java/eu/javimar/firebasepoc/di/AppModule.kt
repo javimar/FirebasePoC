@@ -3,13 +3,13 @@ package eu.javimar.firebasepoc.di
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import com.google.android.gms.auth.api.identity.Identity
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import eu.javimar.firebasepoc.features.auth.utils.GoogleAuthUiClient
+import eu.javimar.firebasepoc.features.auth.utils.GoogleAuthManager
+import eu.javimar.firebasepoc.features.storage.utils.StorageManager
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -19,8 +19,17 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideGoogleAuthUiClient(@ApplicationContext context: Context): GoogleAuthUiClient {
-        return GoogleAuthUiClient(oneTapClient = Identity.getSignInClient(context.applicationContext))
+    fun provideGoogleAuthUiClient(@ApplicationContext context: Context): GoogleAuthManager {
+        return GoogleAuthManager(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideStorageManager(
+        @ApplicationContext context: Context,
+        auth: GoogleAuthManager
+    ): StorageManager {
+        return StorageManager(context, auth.getSignedInUser()!!.userId)
     }
 
     @Provides

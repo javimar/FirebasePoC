@@ -10,7 +10,7 @@ import eu.javimar.firebasepoc.core.utils.UIEvent
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun AuthMain(
+fun LoginMain(
     onNavigate: (UIEvent.Navigate) -> Unit,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
@@ -33,7 +33,8 @@ fun AuthMain(
         }
     }
 
-    SignInScreen(
+    LoginScreen(
+        state = viewModel.state,
         onEvent = viewModel::onEvent,
     )
 }

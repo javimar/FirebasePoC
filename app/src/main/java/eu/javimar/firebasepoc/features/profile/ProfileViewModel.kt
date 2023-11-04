@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import eu.javimar.firebasepoc.core.nav.screens.AuthGraphScreens
 import eu.javimar.firebasepoc.core.utils.UIEvent
-import eu.javimar.firebasepoc.features.auth.utils.GoogleAuthUiClient
+import eu.javimar.firebasepoc.features.auth.utils.GoogleAuthManager
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val googleAuthUiClient: GoogleAuthUiClient,
+    private val googleAuthManager: GoogleAuthManager,
 ): ViewModel() {
 
     var state by mutableStateOf(ProfileState())
@@ -26,7 +26,7 @@ class ProfileViewModel @Inject constructor(
     val event = _eventChannel.receiveAsFlow()
 
     init {
-        val userData = googleAuthUiClient.getSignedInUser()
+        val userData = googleAuthManager.getSignedInUser()
         if(userData != null) {
             state = state.copy(
                 userData = userData
@@ -42,8 +42,8 @@ class ProfileViewModel @Inject constructor(
 
     private fun signOut() {
         viewModelScope.launch {
-            googleAuthUiClient.signOut()
-            sendUiEvent(UIEvent.Navigate(AuthGraphScreens.Auth.route))
+            googleAuthManager.signOut()
+            sendUiEvent(UIEvent.Navigate(AuthGraphScreens.Login.route))
         }
     }
 

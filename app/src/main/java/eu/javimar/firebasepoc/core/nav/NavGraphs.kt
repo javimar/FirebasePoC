@@ -6,12 +6,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import eu.javimar.firebasepoc.core.nav.destinations.forgotPassDestination
+import eu.javimar.firebasepoc.core.nav.destinations.loginDestination
 import eu.javimar.firebasepoc.core.nav.destinations.profileDestination
+import eu.javimar.firebasepoc.core.nav.destinations.signUpDestination
 import eu.javimar.firebasepoc.core.nav.destinations.storageDestination
 import eu.javimar.firebasepoc.core.nav.screens.AuthGraphScreens
 import eu.javimar.firebasepoc.core.nav.screens.BottomGraphScreens
 import eu.javimar.firebasepoc.features.HomeMain
-import eu.javimar.firebasepoc.features.auth.AuthMain
 
 @Composable
 fun RootNavGraph(
@@ -36,21 +38,11 @@ fun NavGraphBuilder.authNavGraph(
 ) {
     navigation(
         route = Graph.AUTH,
-        startDestination = AuthGraphScreens.Auth.route
+        startDestination = AuthGraphScreens.Login.route
     ) {
-        composable(
-            route = AuthGraphScreens.Auth.route,
-        ) {
-            AuthMain(
-                onNavigate = {
-                    navController.navigate(Graph.PROFILE) {
-                        popUpTo(Graph.AUTH) {
-                            inclusive = true
-                        }
-                    }
-                }
-            )
-        }
+        loginDestination(navController)
+        forgotPassDestination(navController)
+        signUpDestination(navController)
     }
 }
 

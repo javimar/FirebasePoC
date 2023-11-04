@@ -63,7 +63,7 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.12.0")
     
-    implementation(platform("androidx.compose:compose-bom:2023.09.00"))
+    implementation(platform("androidx.compose:compose-bom:2023.10.01"))
     implementation("androidx.compose.ui:ui-tooling")
     implementation("androidx.compose.material3:material3-android:1.2.0-alpha10")
     implementation("androidx.compose.foundation:foundation")

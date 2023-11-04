@@ -9,8 +9,8 @@ sealed class BottomGraphScreens(
     @StringRes val resourceId: Int = 0,
     @DrawableRes val icon: Int,
 ) {
-    data object Profile: BottomGraphScreens(route = PROFILE_DEST, R.string.nav_home, R.drawable.ic_profile)
-    data object Storage: BottomGraphScreens(route = STORAGE_DEST, R.string.nav_cloud, R.drawable.ic_cloud)
+    data object Profile: BottomGraphScreens(route = PROFILE_DEST, R.string.nav_profile, R.drawable.ic_profile)
+    data object Storage: BottomGraphScreens(route = STORAGE_DEST, R.string.nav_storage, R.drawable.ic_cloud)
 }
 
 const val PROFILE_DEST = "profile"

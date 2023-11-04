@@ -2,7 +2,7 @@
     <string name="app_name">Firebase PoC</string>
 
     <!-- NAV TITLES -->
-    <string name="nav_home">Home</string>
-    <string name="nav_cloud">Storage</string>
+    <string name="nav_profile">Profile</string>
+    <string name="nav_storage">Storage</string>
 
 </resources>
