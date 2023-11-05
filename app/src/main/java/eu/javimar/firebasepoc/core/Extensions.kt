@@ -31,6 +31,9 @@ fun logd(str: String) {
 fun logi(str: String) {
     Log.i("${"".TAG} - JAVIER "  , str)
 }
+fun logw(str: String) {
+    Log.w("${"".TAG} - JAVIER "  , str)
+}
 fun loge(str: String) {
     Log.e("${"".TAG} - JAVIER "  , str)
 }

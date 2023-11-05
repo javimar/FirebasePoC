@@ -1,5 +1,6 @@
 package eu.javimar.firebasepoc.features.profile
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,7 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ExitToApp
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -56,28 +57,10 @@ fun ProfileScreen(
                         horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        if(state.user?.photoUrl != null) {
-                            AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(state.user.photoUrl)
-                                    .crossfade(true)
-                                    .build(),
-                                contentDescription = "Imagen",
-                                placeholder = painterResource(id = R.drawable.profile),
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .clip(CircleShape)
-                                    .size(40.dp))
-                        } else {
-                            Image(
-                                painter = painterResource(R.drawable.profile),
-                                contentDescription = "Foto de perfil por defecto",
-                                modifier = Modifier
-                                    .padding(end = 8.dp)
-                                    .size(40.dp)
-                                    .clip(CircleShape)
-                            )
-                        }
+                        CheckProfilePicture(
+                            photoUrl = state.user?.photoUrl,
+                            size = 40.dp
+                        )
                         Spacer(modifier = Modifier.width(10.dp))
                         Column {
                             Text(
@@ -89,7 +72,7 @@ fun ProfileScreen(
                             )
                             Text(
                                 text = if(!state.user?.email.isNullOrEmpty())
-                                    "${state.user?.email}" else "Anónimo",
+                                    "${state.user?.email}" else "Anonymous",
                                 fontSize = 12.sp,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis)
@@ -99,7 +82,7 @@ fun ProfileScreen(
                 actions = {
                     IconButton(
                         onClick = {
-
+                            onEvent(ProfileEvent.SignOut)
                         }
                     ) {
                         Icon(
@@ -121,17 +104,10 @@ fun ProfileScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if(state.user?.photoUrl != null) {
-                AsyncImage(
-                    model = state.user.photoUrl,
-                    contentDescription = "Profile picture",
-                    modifier = Modifier
-                        .size(150.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-            }
+            CheckProfilePicture(
+                photoUrl = state.user?.photoUrl,
+                size = 150.dp
+            )
             if(state.user?.displayName != null) {
                 Text(
                     text = state.user.displayName!!,
@@ -140,13 +116,6 @@ fun ProfileScreen(
                     fontSize = 36.sp
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-            }
-            Button(
-                onClick = {
-                    onEvent(ProfileEvent.SignOut)
-                }
-            ) {
-                Text(text = "Sign Out")
             }
             if (state.showExitDialog) {
                 LogoutDialog(
@@ -160,6 +129,35 @@ fun ProfileScreen(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun CheckProfilePicture(
+    photoUrl: Uri?,
+    size: Dp
+) {
+    if(photoUrl != null) {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(photoUrl)
+                .crossfade(true)
+                .build(),
+            contentDescription = "Profile picture",
+            placeholder = painterResource(id = R.drawable.profile),
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .clip(CircleShape)
+                .size(size))
+    } else {
+        Image(
+            painter = painterResource(R.drawable.profile),
+            contentDescription = "Default Profile picture",
+            modifier = Modifier
+                .padding(end = 8.dp)
+                .size(size)
+                .clip(CircleShape)
+        )
     }
 }
 

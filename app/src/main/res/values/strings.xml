@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Firebase PoC</string>
 
+    <string name="defaul_notification_channel_id" translatable="false">firepase_poc_default_channel</string>
+
     <!-- NAV TITLES -->
     <string name="nav_profile">Profile</string>
     <string name="nav_storage">Storage</string>

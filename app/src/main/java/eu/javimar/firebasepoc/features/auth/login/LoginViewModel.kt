@@ -58,9 +58,7 @@ class LoginViewModel @Inject constructor(
         when(event) {
             is LoginEvent.EmailChanged -> state = state.copy(email = event.email)
             is LoginEvent.PasswordChanged -> state = state.copy(password = event.password)
-            LoginEvent.SignUp -> {
-                sendUiEvent((UIEvent.Navigate(AuthGraphScreens.SignUp.route)))
-            }
+            LoginEvent.SignUp -> sendUiEvent((UIEvent.Navigate(AuthGraphScreens.SignUp.route)))
             LoginEvent.ForgotPass -> sendUiEvent((UIEvent.Navigate(AuthGraphScreens.ForgotPass.route)))
             LoginEvent.GuestLogin -> loginInAnonymous()
             LoginEvent.UserPassLogin -> checkValidation()
