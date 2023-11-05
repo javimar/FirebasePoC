@@ -8,6 +8,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import eu.javimar.domain.auth.utils.IFormValidator
+import eu.javimar.firebasepoc.features.auth.utils.FormValidator
 import eu.javimar.firebasepoc.features.auth.utils.GoogleAuthManager
 import eu.javimar.firebasepoc.features.storage.utils.StorageManager
 import javax.inject.Named
@@ -29,7 +31,7 @@ object AppModule {
         @ApplicationContext context: Context,
         auth: GoogleAuthManager
     ): StorageManager {
-        return StorageManager(context, auth.getSignedInUser()!!.userId)
+        return StorageManager(context, auth.getSignedInUser()!!.uid)
     }
 
     @Provides
@@ -51,4 +53,8 @@ object AppModule {
         }
         return hasInternet
     }
+
+    @Provides
+    @Singleton
+    fun providePlatfoPasswordChecker(): IFormValidator = FormValidator()
 }

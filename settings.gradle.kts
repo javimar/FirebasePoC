@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "CoachPoC"
 include(":app")
+include(":domain")

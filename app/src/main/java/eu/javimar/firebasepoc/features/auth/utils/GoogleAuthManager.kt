@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import eu.javimar.coachpoc.BuildConfig
+import eu.javimar.domain.auth.utils.AuthRes
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
 
@@ -40,13 +41,16 @@ class GoogleAuthManager(
     suspend fun signInAnonymously(): AuthRes<FirebaseUser> {
         return try {
             val result = auth.signInAnonymously().await()
-            AuthRes.Success(result.user ?: throw Exception("Error while singing in anonymously"))
+            AuthRes.Success(result.user ?: throw Exception("Error while siging in anonymously"))
         } catch(e: Exception) {
             AuthRes.Error(e.message ?: "Error while singing in anonymously")
         }
     }
 
-    suspend fun createUserWithEmailAndPassword(email: String, password: String): AuthRes<FirebaseUser?> {
+    suspend fun createUserWithEmailAndPassword(
+        email: String,
+        password: String
+    ): AuthRes<FirebaseUser?> {
         return try {
             val authResult = auth.createUserWithEmailAndPassword(email, password).await()
             AuthRes.Success(authResult.user)
@@ -60,7 +64,7 @@ class GoogleAuthManager(
             val authResult = auth.signInWithEmailAndPassword(email, password).await()
             AuthRes.Success(authResult.user)
         } catch(e: Exception) {
-            AuthRes.Error(e.message ?: "Error while singing")
+            AuthRes.Error(e.message ?: "Error while signing in")
         }
     }
 
@@ -87,29 +91,17 @@ class GoogleAuthManager(
         return result?.pendingIntent?.intentSender
     }
 
-    suspend fun getSignWithIntent(intent: Intent): SignInResult {
+    suspend fun getSignWithIntent(intent: Intent): AuthRes<FirebaseUser> {
         val credential = signInClient.getSignInCredentialFromIntent(intent)
         val googleIdToken = credential.googleIdToken
         val googleCredential = GoogleAuthProvider.getCredential(googleIdToken, null)
         return try {
             val user = auth.signInWithCredential(googleCredential).await().user
-            SignInResult(
-                data = user?.run {
-                    UserData(
-                        userId = uid,
-                        username = displayName,
-                        profilePictureUrl = photoUrl?.toString()
-                    )
-                },
-                errorMessage = null
-            )
+            AuthRes.Success(user ?: throw Exception("Error signing in Google"))
         } catch(e: Exception) {
             e.printStackTrace()
             if(e is CancellationException) throw e
-            SignInResult(
-                data = null,
-                errorMessage = e.message
-            )
+            AuthRes.Error(e.message ?: "Error signing in Google")
         }
     }
 
@@ -161,11 +153,5 @@ class GoogleAuthManager(
         }
     }
 
-    fun getSignedInUser(): UserData? = auth.currentUser?.run {
-        UserData(
-            userId = uid,
-            username = displayName,
-            profilePictureUrl = photoUrl?.toString()
-        )
-    }
+    fun getSignedInUser(): FirebaseUser? = auth.currentUser
 }

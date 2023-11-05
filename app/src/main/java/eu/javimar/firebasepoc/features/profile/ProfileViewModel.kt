@@ -29,7 +29,7 @@ class ProfileViewModel @Inject constructor(
         val userData = googleAuthManager.getSignedInUser()
         if(userData != null) {
             state = state.copy(
-                userData = userData
+                user = userData
             )
         }
     }

@@ -28,15 +28,20 @@ import eu.javimar.coachpoc.R
 
 @Composable
 fun SocialMediaButton(
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
     text: String,
     icon: Int,
     color: Color
 ) {
     var click by remember { mutableStateOf(false) }
+
     Surface(
         onClick = onClick,
-        modifier = Modifier.padding(start = 40.dp, end = 40.dp).clickable { click = !click },
+        modifier = modifier
+            .clickable {
+                click = !click
+            },
         shape = RoundedCornerShape(50),
         border = BorderStroke(
             width = 1.dp,
@@ -44,7 +49,14 @@ fun SocialMediaButton(
         color = color
     ) {
         Row(
-            modifier = Modifier.padding(start = 12.dp, end = 16.dp, top = 12.dp, bottom = 12.dp).fillMaxWidth(),
+            modifier = modifier
+                .padding(
+                    start = 12.dp,
+                    end = 16.dp,
+                    top = 12.dp,
+                    bottom = 12.dp
+                )
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {

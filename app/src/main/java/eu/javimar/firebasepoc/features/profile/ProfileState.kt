@@ -1,7 +1,8 @@
 package eu.javimar.firebasepoc.features.profile
 
-import eu.javimar.firebasepoc.features.auth.utils.UserData
+import com.google.firebase.auth.FirebaseUser
 
 data class ProfileState(
-    val userData: UserData? = null
+    val user: FirebaseUser? = null,
+    val showExitDialog: Boolean = false
 )

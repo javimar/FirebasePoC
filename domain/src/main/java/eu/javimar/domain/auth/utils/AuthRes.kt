@@ -1,4 +1,4 @@
-package eu.javimar.firebasepoc.features.auth.utils
+package eu.javimar.domain.auth.utils
 
 sealed class AuthRes<out T> {
     data class Success<T>(val data: T): AuthRes<T>()
