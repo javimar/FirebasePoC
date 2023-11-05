@@ -10,13 +10,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import eu.javimar.coachpoc.R
 import eu.javimar.domain.auth.usecases.ValidateEmailUseCase
 import eu.javimar.domain.auth.utils.AuthRes
-import eu.javimar.firebasepoc.core.loge
+import eu.javimar.firebasepoc.core.logd
 import eu.javimar.firebasepoc.core.utils.UIEvent
 import eu.javimar.firebasepoc.core.utils.UIText
 import eu.javimar.firebasepoc.features.auth.forgotpass.state.ForgotPassEvent
 import eu.javimar.firebasepoc.features.auth.forgotpass.state.ForgotPassState
 import eu.javimar.firebasepoc.features.auth.utils.GoogleAuthManager
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -62,16 +63,13 @@ class ForgotPassViewModel @Inject constructor(
         viewModelScope.launch {
             when(val result = googleAuthManager.resetPassword(state.email)) {
                 is AuthRes.Success -> {
-                    UIEvent.ShowSnackbar(
-                        message = UIText.StringResource(R.string.signup_form_recover_pass_email_sent),
-                    )
+                    sendUiEvent(UIEvent.ShowSnackbar(message = UIText.StringResource(R.string.signup_form_recover_pass_email_sent)))
+                    delay(1500)
                     sendUiEvent(UIEvent.PopBackStack)
                 }
                 is AuthRes.Error -> {
-                    UIEvent.ShowSnackbar(
-                        message = UIText.StringResource(R.string.signup_form_login_error),
-                    )
-                    loge(result.errorMessage)
+                    sendUiEvent(UIEvent.ShowSnackbar(message = UIText.StringResource(R.string.signup_form_login_error)))
+                    logd(result.errorMessage)
                 }
             }
         }

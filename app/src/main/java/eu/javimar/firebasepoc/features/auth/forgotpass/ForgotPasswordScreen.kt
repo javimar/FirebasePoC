@@ -102,6 +102,7 @@ fun ForgotPasswordScreen(
             ) {
                 Button(
                     onClick = {
+                        focusManager.clearFocus()
                         onEvent(ForgotPassEvent.RecoverClicked)
                     },
                     enabled = buttonState,

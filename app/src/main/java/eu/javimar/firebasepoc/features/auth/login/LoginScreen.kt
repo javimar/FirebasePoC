@@ -49,6 +49,7 @@ import eu.javimar.firebasepoc.features.auth.utils.getErrorRes
 @Composable
 fun LoginScreen(
     state: LoginState,
+    buttonState: Boolean,
     onEvent: (LoginEvent) -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
@@ -173,6 +174,7 @@ fun LoginScreen(
                         onClick = {
                             onEvent(LoginEvent.UserPassLogin)
                         },
+                        enabled = buttonState,
                         shape = RoundedCornerShape(50.dp),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -239,6 +241,7 @@ fun LoginPreview() {
     LoginScreen(
         state = LoginState(),
         onEvent = {},
+        buttonState = true,
         snackbarHostState = SnackbarHostState()
     )
 }

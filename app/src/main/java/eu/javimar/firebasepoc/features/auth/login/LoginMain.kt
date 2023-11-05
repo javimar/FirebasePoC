@@ -42,6 +42,7 @@ fun LoginMain(
 
     LoginScreen(
         state = viewModel.state,
+        buttonState = viewModel.buttonState,
         onEvent = viewModel::onEvent,
         snackbarHostState = snackbarHostState
     )
