@@ -1,5 +1,6 @@
 package eu.javimar.firebasepoc.features.auth.forgotpass
 
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -7,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import eu.javimar.coachpoc.R
+import eu.javimar.domain.auth.usecases.ValidateEmailUseCase
 import eu.javimar.domain.auth.utils.AuthRes
 import eu.javimar.firebasepoc.core.loge
 import eu.javimar.firebasepoc.core.utils.UIEvent
@@ -22,10 +24,15 @@ import javax.inject.Inject
 @HiltViewModel
 class ForgotPassViewModel @Inject constructor(
     private val googleAuthManager: GoogleAuthManager,
+    private val validateEmailUseCase: ValidateEmailUseCase,
 ): ViewModel() {
 
     var state by mutableStateOf(ForgotPassState())
         private set
+
+    val buttonState by derivedStateOf {
+        state.email.isNotBlank()
+    }
 
     private val _eventChannel = Channel<UIEvent>()
     val event = _eventChannel.receiveAsFlow()
@@ -33,7 +40,21 @@ class ForgotPassViewModel @Inject constructor(
 
     fun onEvent(event: ForgotPassEvent) {
         when(event) {
-            ForgotPassEvent.RecoverClicked -> resetPassword()
+            ForgotPassEvent.RecoverClicked -> checkValidation()
+            is ForgotPassEvent.EmailChanged -> state = state.copy(email = event.email)
+        }
+    }
+
+    private fun checkValidation() {
+        viewModelScope.launch {
+            resetErrors()
+            val emailResult = validateEmailUseCase.execute(state.email)
+            val hasError = listOf(emailResult).any { !it.successful }
+            if(hasError) {
+                state = state.copy(emailError = emailResult.errorMessage)
+                return@launch
+            }
+            resetPassword()
         }
     }
 
@@ -54,6 +75,12 @@ class ForgotPassViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun resetErrors() {
+        state = state.copy(
+            emailError = null
+        )
     }
 
     private fun sendUiEvent(event: UIEvent) {

@@ -31,7 +31,7 @@
     <string name="signup_form_confirm_password_error">Confirm password cannot be blank</string>
     <string name="signup_form_confirm_password_match_error">Password must match</string>
     <string name="signup_password_requirement_length">The password must be at least 8 characters long.</string>
-    <string name="signup_password_requirement_symbols">A symbol (!@#$%^&amp;*).</string>
+    <string name="signup_password_requirement_symbols">A symbol.</string>
     <string name="signup_password_requirement_characters">An uppercase letter, a lowercase one and a number.</string>
 
 

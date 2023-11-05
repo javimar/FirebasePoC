@@ -1,5 +1,6 @@
 package eu.javimar.firebasepoc.features.auth.signup
 
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -34,6 +35,13 @@ class SignUpViewModel @Inject constructor(
 
     var state by mutableStateOf(SignUpState())
         private set
+
+    val buttonEnabledState by derivedStateOf {
+        state.email.isNotBlank() &&
+        state.password.isNotBlank() &&
+        state.confirmPassword.isNotBlank() &&
+        passwordChecked()
+    }
 
     private val _eventChannel = Channel<UIEvent>()
     val event = _eventChannel.receiveAsFlow()

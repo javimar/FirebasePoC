@@ -57,6 +57,7 @@ import eu.javimar.firebasepoc.ui.theme.Purple40
 @Composable
 fun SignUpScreen(
     state: SignUpState,
+    buttonState: Boolean,
     onEvent: (SignUpEvent) -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
@@ -199,8 +200,8 @@ fun SignUpScreen(
                 else PasswordVisualTransformation(),
                 keyboardActions = KeyboardActions(
                     onNext = {
-                        focusManager.moveFocus(FocusDirection.Down)
                         keyboardController?.hide()
+                        focusManager.moveFocus(FocusDirection.Down)
                     }
                 ),
                 keyboardOptions = KeyboardOptions(
@@ -225,12 +226,13 @@ fun SignUpScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .focusRequester(focusRequester)
             ) {
                 Button(
                     modifier = Modifier
-                        .focusRequester(focusRequester)
                         .fillMaxWidth()
                         .height(50.dp),
+                    enabled = buttonState,
                     onClick = {
                         onEvent(SignUpEvent.RegisterClicked)
                     },
@@ -266,6 +268,7 @@ fun SignUpPreview() {
     SignUpScreen(
         SignUpState(),
         onEvent = {},
+        buttonState = false,
         snackbarHostState = SnackbarHostState()
     )
 }

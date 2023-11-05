@@ -39,6 +39,7 @@ fun ForgotPassMain(
 
     ForgotPasswordScreen(
         state = viewModel.state,
+        buttonState = viewModel.buttonState,
         onEvent = viewModel::onEvent,
         snackbarHostState = snackbarHostState
     )

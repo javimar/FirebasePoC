@@ -39,6 +39,7 @@ fun SignUpMain(
 
     SignUpScreen(
         state = viewModel.state,
+        buttonState = viewModel.buttonEnabledState,
         onEvent = viewModel::onEvent,
         snackbarHostState = snackbarHostState
     )
