@@ -6,9 +6,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import eu.javimar.firebasepoc.core.firebase.AnalyticsManager
+import eu.javimar.firebasepoc.core.firebase.GoogleAuthManager
 import eu.javimar.firebasepoc.core.nav.screens.AuthGraphScreens
+import eu.javimar.firebasepoc.core.nav.screens.BottomGraphScreens
 import eu.javimar.firebasepoc.core.utils.UIEvent
-import eu.javimar.firebasepoc.features.auth.utils.GoogleAuthManager
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -17,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val googleAuthManager: GoogleAuthManager,
+    private val analyticsManager: AnalyticsManager,
 ): ViewModel() {
 
     var state by mutableStateOf(ProfileState())
@@ -26,6 +29,7 @@ class ProfileViewModel @Inject constructor(
     val event = _eventChannel.receiveAsFlow()
 
     init {
+        analyticsManager.logScreenView(BottomGraphScreens.Profile.route)
         val userData = googleAuthManager.getSignedInUser()
         if(userData != null) {
             state = state.copy(
@@ -42,6 +46,8 @@ class ProfileViewModel @Inject constructor(
 
     private fun signOut() {
         viewModelScope.launch {
+            analyticsManager
+                .logButtonClicked("Click: Logout: ${googleAuthManager.getSignedInUser()?.email}")
             googleAuthManager.signOut()
             sendUiEvent(UIEvent.Navigate(AuthGraphScreens.Login.route))
         }

@@ -44,7 +44,7 @@
         </provider>
 
         <service
-            android:name="eu.javimar.firebasepoc.features.fcm.MyFirebaseService"
+            android:name="eu.javimar.firebasepoc.core.fcm.MyFirebaseService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

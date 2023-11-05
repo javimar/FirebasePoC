@@ -7,7 +7,7 @@ import androidx.activity.result.IntentSenderRequest
 
 sealed interface LoginEvent {
     data class GoogleLogin(val launcher: ManagedActivityResultLauncher<IntentSenderRequest, ActivityResult>): LoginEvent
-    data class SignIntent(val intent: Intent?): LoginEvent
+    data class GoogleSignIntent(val intent: Intent?): LoginEvent
     data class EmailChanged(val email: String): LoginEvent
     data class PasswordChanged(val password: String): LoginEvent
     data object GuestLogin: LoginEvent

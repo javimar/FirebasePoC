@@ -1,4 +1,4 @@
-package eu.javimar.firebasepoc.features.storage.utils
+package eu.javimar.firebasepoc.core.firebase
 
 import android.content.Context
 import android.graphics.Bitmap

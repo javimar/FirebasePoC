@@ -13,13 +13,13 @@ import eu.javimar.domain.auth.usecases.ValidateEmailUseCase
 import eu.javimar.domain.auth.usecases.ValidatePassUseCase
 import eu.javimar.domain.auth.utils.AuthRes
 import eu.javimar.domain.auth.utils.ConfirmPassChecker
-import eu.javimar.firebasepoc.core.loge
+import eu.javimar.firebasepoc.core.firebase.AnalyticsManager
+import eu.javimar.firebasepoc.core.firebase.GoogleAuthManager
 import eu.javimar.firebasepoc.core.nav.screens.AuthGraphScreens
 import eu.javimar.firebasepoc.core.utils.UIEvent
 import eu.javimar.firebasepoc.core.utils.UIText
 import eu.javimar.firebasepoc.features.auth.signup.state.SignUpEvent
 import eu.javimar.firebasepoc.features.auth.signup.state.SignUpState
-import eu.javimar.firebasepoc.features.auth.utils.GoogleAuthManager
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -30,7 +30,8 @@ class SignUpViewModel @Inject constructor(
     private val googleAuthManager: GoogleAuthManager,
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePassUseCase: ValidatePassUseCase,
-    private val validateConfirmPassUseCase: ValidateConfirmPassUseCase
+    private val validateConfirmPassUseCase: ValidateConfirmPassUseCase,
+    private val analyticsManager: AnalyticsManager,
 ): ViewModel() {
 
     var state by mutableStateOf(SignUpState())
@@ -45,6 +46,10 @@ class SignUpViewModel @Inject constructor(
 
     private val _eventChannel = Channel<UIEvent>()
     val event = _eventChannel.receiveAsFlow()
+
+    init {
+        analyticsManager.logScreenView(AuthGraphScreens.SignUp.route)
+    }
 
     fun onEvent(event: SignUpEvent) {
         when (event) {
@@ -76,11 +81,12 @@ class SignUpViewModel @Inject constructor(
         viewModelScope.launch {
             when(val result = googleAuthManager.createUserWithEmailAndPassword(state.email, state.password)) {
                 is AuthRes.Success -> {
+                    analyticsManager.logButtonClicked("Click: Crear cuenta OK")
                     sendUiEvent(UIEvent.ShowSnackbar(UIText.StringResource(R.string.signup_form_create_ok)))
                     sendUiEvent(UIEvent.PopBackStack)
                 }
                 is AuthRes.Error -> {
-                    loge(result.errorMessage)
+                    analyticsManager.logError("Error al crear cuenta: ${result.errorMessage}")
                     sendUiEvent(UIEvent.ShowSnackbar(UIText.StringResource(R.string.signup_form_create_error)))
                 }
             }

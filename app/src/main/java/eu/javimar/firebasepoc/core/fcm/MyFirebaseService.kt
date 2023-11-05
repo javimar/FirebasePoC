@@ -1,4 +1,4 @@
-package eu.javimar.firebasepoc.features.fcm
+package eu.javimar.firebasepoc.core.fcm
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

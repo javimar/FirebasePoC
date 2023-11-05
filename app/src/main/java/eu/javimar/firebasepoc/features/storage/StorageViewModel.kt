@@ -3,8 +3,8 @@ package eu.javimar.firebasepoc.features.storage
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import eu.javimar.firebasepoc.core.firebase.StorageManager
 import eu.javimar.firebasepoc.core.utils.UIEvent
-import eu.javimar.firebasepoc.features.storage.utils.StorageManager
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch

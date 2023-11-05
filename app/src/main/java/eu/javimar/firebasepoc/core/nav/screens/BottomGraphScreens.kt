@@ -13,5 +13,5 @@ sealed class BottomGraphScreens(
     data object Storage: BottomGraphScreens(route = STORAGE_DEST, R.string.nav_storage, R.drawable.ic_cloud)
 }
 
-const val PROFILE_DEST = "profile"
-const val STORAGE_DEST = "storage"
+const val PROFILE_DEST = "profile_dest"
+const val STORAGE_DEST = "storage_dest"

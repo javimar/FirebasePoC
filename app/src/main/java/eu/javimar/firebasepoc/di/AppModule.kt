@@ -10,29 +10,12 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import eu.javimar.domain.auth.utils.IFormValidator
 import eu.javimar.firebasepoc.features.auth.utils.FormValidator
-import eu.javimar.firebasepoc.features.auth.utils.GoogleAuthManager
-import eu.javimar.firebasepoc.features.storage.utils.StorageManager
 import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
-    @Provides
-    @Singleton
-    fun provideGoogleAuthUiClient(@ApplicationContext context: Context): GoogleAuthManager {
-        return GoogleAuthManager(context)
-    }
-
-    @Provides
-    @Singleton
-    fun provideStorageManager(
-        @ApplicationContext context: Context,
-        auth: GoogleAuthManager
-    ): StorageManager {
-        return StorageManager(context, auth.getSignedInUser()!!.uid)
-    }
 
     @Provides
     @Singleton

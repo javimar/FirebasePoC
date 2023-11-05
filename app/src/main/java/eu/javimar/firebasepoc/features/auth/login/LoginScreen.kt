@@ -67,7 +67,7 @@ fun LoginScreen(
         contract = ActivityResultContracts.StartIntentSenderForResult(),
         onResult = { result ->
             if(result.resultCode == ComponentActivity.RESULT_OK) {
-                onEvent(LoginEvent.SignIntent(result.data))
+                onEvent(LoginEvent.GoogleSignIntent(result.data))
             }
         }
     )
