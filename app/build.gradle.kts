@@ -6,6 +6,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("dagger.hilt.android.plugin")
     id("kotlinx-serialization")
+    id("com.google.firebase.firebase-perf")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
@@ -89,5 +90,6 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-messaging-ktx")
     implementation("com.google.firebase:firebase-storage-ktx")
+    implementation("com.google.firebase:firebase-perf")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
 }
