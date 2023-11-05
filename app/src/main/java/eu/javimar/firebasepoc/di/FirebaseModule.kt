@@ -25,6 +25,6 @@ object FirebaseModule {
 
     @Provides
     @Singleton
-    fun provideStorageManager(@ApplicationContext context: Context, auth: GoogleAuthManager): StorageManager =
-        StorageManager(context, auth.getSignedInUser()!!.uid)
+    fun provideStorageManager(auth: GoogleAuthManager): StorageManager =
+        StorageManager(auth.getSignedInUser()!!.uid)
 }

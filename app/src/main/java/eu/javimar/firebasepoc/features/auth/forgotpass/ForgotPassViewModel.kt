@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import eu.javimar.coachpoc.R
 import eu.javimar.domain.auth.usecases.ValidateEmailUseCase
-import eu.javimar.domain.auth.utils.AuthRes
+import eu.javimar.domain.auth.utils.FileResult
 import eu.javimar.firebasepoc.core.firebase.AnalyticsManager
 import eu.javimar.firebasepoc.core.firebase.GoogleAuthManager
 import eu.javimar.firebasepoc.core.nav.screens.AuthGraphScreens
@@ -67,13 +67,13 @@ class ForgotPassViewModel @Inject constructor(
     private fun resetPassword() {
         viewModelScope.launch {
             when(val result = googleAuthManager.resetPassword(state.email)) {
-                is AuthRes.Success -> {
-                    analyticsManager.logButtonClicked("Click: Reset password OK -> ${state.email}")
+                is FileResult.Success -> {
+                    analyticsManager.buttonClicked("Click: Reset password OK -> ${state.email}")
                     sendUiEvent(UIEvent.ShowSnackbar(message = UIText.StringResource(R.string.signup_form_recover_pass_email_sent)))
                     delay(1500)
                     sendUiEvent(UIEvent.PopBackStack)
                 }
-                is AuthRes.Error -> {
+                is FileResult.Error -> {
                     analyticsManager.logError("Error Reset password: ${result.errorMessage}")
                     sendUiEvent(UIEvent.ShowSnackbar(message = UIText.DynamicString(result.errorMessage)))
                 }

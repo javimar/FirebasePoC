@@ -1,23 +1,6 @@
 package eu.javimar.firebasepoc.core
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.util.Log
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.Date
-
-@SuppressLint("SimpleDateFormat")
-fun Context.createImageFile(): File {
-    val timeStamp = SimpleDateFormat("yyyMMdd_HHmmss").format(Date())
-    val imageFileName = "JPEG_" + timeStamp + "_"
-    return File.createTempFile(
-        imageFileName,
-        ".jpg",
-        externalCacheDir
-    )
-}
-
 
 val Any.TAG: String
     get() {

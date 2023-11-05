@@ -47,7 +47,7 @@ class ProfileViewModel @Inject constructor(
     private fun signOut() {
         viewModelScope.launch {
             analyticsManager
-                .logButtonClicked("Click: Logout: ${googleAuthManager.getSignedInUser()?.email}")
+                .buttonClicked("Click: Logout: ${googleAuthManager.getSignedInUser()?.email}")
             googleAuthManager.signOut()
             sendUiEvent(UIEvent.Navigate(AuthGraphScreens.Login.route))
         }

@@ -12,7 +12,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import eu.javimar.coachpoc.BuildConfig
-import eu.javimar.domain.auth.utils.AuthRes
+import eu.javimar.domain.auth.utils.FileResult
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
 
@@ -22,42 +22,42 @@ class GoogleAuthManager(
     private val firebaseAuth: FirebaseAuth by lazy { Firebase.auth }
     private val googleSignInClient = Identity.getSignInClient(context)
 
-    suspend fun signInAnonymously(): AuthRes<FirebaseUser> {
+    suspend fun signInAnonymously(): FileResult<FirebaseUser> {
         return try {
             val result = firebaseAuth.signInAnonymously().await()
-            AuthRes.Success(result.user ?: throw Exception("Error while login in anonymously"))
+            FileResult.Success(result.user ?: throw Exception("Error while login in anonymously"))
         } catch(e: Exception) {
-            AuthRes.Error(e.message ?: "Error while login in anonymously")
+            FileResult.Error(e.message ?: "Error while login in anonymously")
         }
     }
 
     suspend fun createUserWithEmailAndPassword(
         email: String,
         password: String
-    ): AuthRes<FirebaseUser?> {
+    ): FileResult<FirebaseUser?> {
         return try {
             val authResult = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
-            AuthRes.Success(authResult.user)
+            FileResult.Success(authResult.user)
         } catch(e: Exception) {
-            AuthRes.Error(e.message ?: "Error while creating user")
+            FileResult.Error(e.message ?: "Error while creating user")
         }
     }
 
-    suspend fun signInWithEmailAndPassword(email: String, password: String): AuthRes<FirebaseUser?> {
+    suspend fun signInWithEmailAndPassword(email: String, password: String): FileResult<FirebaseUser?> {
         return try {
             val authResult = firebaseAuth.signInWithEmailAndPassword(email, password).await()
-            AuthRes.Success(authResult.user)
+            FileResult.Success(authResult.user)
         } catch(e: Exception) {
-            AuthRes.Error(e.message ?: "Error while signing in")
+            FileResult.Error(e.message ?: "Error while signing in")
         }
     }
 
-    suspend fun resetPassword(email: String): AuthRes<Unit> {
+    suspend fun resetPassword(email: String): FileResult<Unit> {
         return try {
             firebaseAuth.sendPasswordResetEmail(email).await()
-            AuthRes.Success(Unit)
+            FileResult.Success(Unit)
         } catch(e: Exception) {
-            AuthRes.Error(e.message ?: "Error white resetting password")
+            FileResult.Error(e.message ?: "Error white resetting password")
         }
     }
 
@@ -86,17 +86,17 @@ class GoogleAuthManager(
 
     fun getSignedInUser(): FirebaseUser? = firebaseAuth.currentUser
 
-    suspend fun getGoogleSignWithIntent(intent: Intent): AuthRes<FirebaseUser> {
+    suspend fun getGoogleSignWithIntent(intent: Intent): FileResult<FirebaseUser> {
         val credential = googleSignInClient.getSignInCredentialFromIntent(intent)
         val googleIdToken = credential.googleIdToken
         val googleCredential = GoogleAuthProvider.getCredential(googleIdToken, null)
         return try {
             val user = firebaseAuth.signInWithCredential(googleCredential).await().user
-            AuthRes.Success(user ?: throw Exception("Login Google error"))
+            FileResult.Success(user ?: throw Exception("Login Google error"))
         } catch(e: Exception) {
             e.printStackTrace()
             if(e is CancellationException) throw e
-            AuthRes.Error(e.message ?: "Login Google error")
+            FileResult.Error(e.message ?: "Login Google error")
         }
     }
 
@@ -107,7 +107,7 @@ class GoogleAuthManager(
             ).await()
         }
         catch(e: Exception) {
-            AuthRes.Error(e.message ?: "Sign in Error")
+            FileResult.Error(e.message ?: "Sign in Error")
             if(e is CancellationException) throw e
             null
         }

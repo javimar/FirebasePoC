@@ -31,6 +31,9 @@ fun StorageMain(
     }
 
     StorageScreen(
+        state = viewModel.state,
+        onEvent = viewModel::onEvent,
+        snackbarHostState = snackbarHostState,
         navController = navController
     )
 }

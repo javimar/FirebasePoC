@@ -11,8 +11,8 @@ import eu.javimar.coachpoc.R
 import eu.javimar.domain.auth.usecases.ValidateConfirmPassUseCase
 import eu.javimar.domain.auth.usecases.ValidateEmailUseCase
 import eu.javimar.domain.auth.usecases.ValidatePassUseCase
-import eu.javimar.domain.auth.utils.AuthRes
 import eu.javimar.domain.auth.utils.ConfirmPassChecker
+import eu.javimar.domain.auth.utils.FileResult
 import eu.javimar.firebasepoc.core.firebase.AnalyticsManager
 import eu.javimar.firebasepoc.core.firebase.GoogleAuthManager
 import eu.javimar.firebasepoc.core.nav.screens.AuthGraphScreens
@@ -80,12 +80,12 @@ class SignUpViewModel @Inject constructor(
     private fun createAccount() {
         viewModelScope.launch {
             when(val result = googleAuthManager.createUserWithEmailAndPassword(state.email, state.password)) {
-                is AuthRes.Success -> {
-                    analyticsManager.logButtonClicked("Click: Crear cuenta OK")
+                is FileResult.Success -> {
+                    analyticsManager.buttonClicked("Click: Crear cuenta OK")
                     sendUiEvent(UIEvent.ShowSnackbar(UIText.StringResource(R.string.signup_form_create_ok)))
                     sendUiEvent(UIEvent.PopBackStack)
                 }
-                is AuthRes.Error -> {
+                is FileResult.Error -> {
                     analyticsManager.logError("Error al crear cuenta: ${result.errorMessage}")
                     sendUiEvent(UIEvent.ShowSnackbar(UIText.StringResource(R.string.signup_form_create_error)))
                 }

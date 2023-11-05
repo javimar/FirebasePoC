@@ -1,77 +1,58 @@
 package eu.javimar.firebasepoc.core.firebase
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
-import android.widget.Toast
 import com.google.firebase.Firebase
-import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ListResult
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.storage
+import eu.javimar.domain.auth.utils.FileResult
+import eu.javimar.domain.storage.model.FileStorageInfo
+import eu.javimar.firebasepoc.core.utils.convertMillisToLocalDate
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
-import java.io.File
 
 class StorageManager(
-    private val context: Context,
     private val uid: String
 ) {
 
     private val storage = Firebase.storage
     private val storageRef = storage.reference
-    //private val authManager = AuthManager(context)
 
-    fun getStorageReference(): StorageReference {
-        return storageRef.child("Images").child(uid)
+    private fun getStorageReference(remoteFolder: String): StorageReference {
+        return storageRef.child(remoteFolder)
     }
 
-    suspend fun uploadFile(fileName: String, filePath: Uri) {
-        val fileRef = getStorageReference().child(fileName)
-        val uploadTask = fileRef.putFile(filePath)
-        uploadTask.await()
-    }
-
-    suspend fun getUserImages(): List<String> {
-        val imageUrls = mutableListOf<String>()
-        val listResults: ListResult = getStorageReference().listAll().await()
-        for(item in listResults.items) {
-            val url = item.downloadUrl.await().toString()
-            imageUrls.add(url)
-        }
-        return imageUrls
-    }
-
-
-    suspend fun getFile(path: String): Bitmap? {
-
+    suspend fun uploadFile(fileName: String, filePath: Uri, remoteFolder: String): FileResult<Unit> {
         return try {
-            val storageRef = FirebaseStorage.getInstance().reference.child(path)
-            var bitmap: Bitmap? = null
-
-            val localFile = withContext(Dispatchers.IO) {
-                File.createTempFile("baby", "jpg")
-            }
-            storageRef.getFile(localFile)
-                .addOnSuccessListener {
-                    bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
-                }
-                .addOnFailureListener {
-                    it.printStackTrace()
-                    Toast.makeText(
-                        context,
-                        "Failed to retrive $it",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }.await()
-            bitmap
+            val fileRef = getStorageReference(remoteFolder).child(fileName)
+            val uploadTask = fileRef.putFile(filePath)
+            uploadTask.await()
+            FileResult.Success(Unit)
         } catch(e: Exception) {
             e.printStackTrace()
             if(e is CancellationException) throw e
-            null
+            FileResult.Error(e.message ?: "Error uploading file")
         }
+    }
+
+    suspend fun getFilesFromStorage(remoteFolder: String): List<FileStorageInfo> {
+        val fileInfo = mutableListOf<FileStorageInfo>()
+        val listResults: ListResult = getStorageReference(remoteFolder).listAll().await()
+        for(item in listResults.items) {
+
+            val meta = item.metadata.await()
+
+            fileInfo.add(
+                FileStorageInfo(
+                    url = item.downloadUrl.await().toString(),
+                    path = item.path,
+                    name = item.name,
+                    contentType = meta.contentType.toString(),
+                    sizeBytes = meta.sizeBytes.toString(),
+                    created = convertMillisToLocalDate(meta.creationTimeMillis)
+                )
+            )
+        }
+        return fileInfo
     }
 }

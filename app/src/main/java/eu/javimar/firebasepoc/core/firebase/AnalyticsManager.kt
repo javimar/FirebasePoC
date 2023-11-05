@@ -14,7 +14,7 @@ class AnalyticsManager(context: Context) {
         firebaseAnalytics.logEvent(eventName, params)
     }
 
-    fun logButtonClicked(buttonName: String) {
+    fun buttonClicked(buttonName: String) {
         val params = Bundle().apply {
             putString("button_name", buttonName)
         }

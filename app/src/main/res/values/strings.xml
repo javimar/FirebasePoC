@@ -7,6 +7,11 @@
     <string name="nav_profile">Profile</string>
     <string name="nav_storage">Storage</string>
 
+    <!-- STORAGE -->
+    <string name="storage_upload_ok">File uploaded</string>
+    <string name="storage_no_elements_error">There are no files to show</string>
+
+    <!-- AUTH -->
     <string name="signup_form_recover_pass_email_sent">Email sent</string>
     <string name="signup_form_recover_pass_title">Password recovery</string>
     <string name="signup_form_recover_pass_action">Recover password</string>

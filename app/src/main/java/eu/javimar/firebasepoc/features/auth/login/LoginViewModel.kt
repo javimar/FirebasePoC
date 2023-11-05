@@ -14,7 +14,7 @@ import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import eu.javimar.coachpoc.R
 import eu.javimar.domain.auth.usecases.ValidateEmailUseCase
-import eu.javimar.domain.auth.utils.AuthRes
+import eu.javimar.domain.auth.utils.FileResult
 import eu.javimar.firebasepoc.core.firebase.AnalyticsManager
 import eu.javimar.firebasepoc.core.firebase.GoogleAuthManager
 import eu.javimar.firebasepoc.core.nav.screens.AuthGraphScreens
@@ -77,13 +77,13 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun onGoogleSignInResult(result: AuthRes<FirebaseUser>) {
+    private fun onGoogleSignInResult(result: FileResult<FirebaseUser>) {
         when(result) {
-            is AuthRes.Success -> {
-                analyticsManager.logButtonClicked("Click: Iniciar sesión Google OK")
+            is FileResult.Success -> {
+                analyticsManager.buttonClicked("Click: Iniciar sesión Google OK")
                 sendUiEvent(UIEvent.Navigate(BottomGraphScreens.Profile.route))
             }
-            is AuthRes.Error -> {
+            is FileResult.Error -> {
                 analyticsManager.logError("Error Iniciar sesión Google: ${result.errorMessage}")
                 sendUiEvent(UIEvent.ShowSnackbar(
                     message = UIText.DynamicString(result.errorMessage))
@@ -108,11 +108,11 @@ class LoginViewModel @Inject constructor(
             when(val result = googleAuthManager.signInWithEmailAndPassword(
                 state.email, state.password
             )) {
-                is AuthRes.Success -> {
-                    analyticsManager.logButtonClicked("Click: Iniciar sesión usuario y contraseña OK")
+                is FileResult.Success -> {
+                    analyticsManager.buttonClicked("Click: Iniciar sesión usuario y contraseña OK")
                     sendUiEvent(UIEvent.Navigate(BottomGraphScreens.Profile.route))
                 }
-                is AuthRes.Error -> {
+                is FileResult.Error -> {
                     analyticsManager.logError("Error Iniciar sesión usuario y contraseña: ${result.errorMessage}")
                     sendUiEvent(UIEvent.ShowSnackbar(
                         message = UIText.DynamicString(result.errorMessage))
@@ -125,11 +125,11 @@ class LoginViewModel @Inject constructor(
     private fun loginInAnonymously() {
         viewModelScope.launch {
             when(val result = googleAuthManager.signInAnonymously()) {
-                is AuthRes.Success -> {
-                    analyticsManager.logButtonClicked("Click: Continuar como invitado OK")
+                is FileResult.Success -> {
+                    analyticsManager.buttonClicked("Click: Continuar como invitado OK")
                     sendUiEvent(UIEvent.Navigate(BottomGraphScreens.Profile.route))
                 }
-                is AuthRes.Error -> {
+                is FileResult.Error -> {
                     analyticsManager.logError("Error login invitado: ${result.errorMessage}")
                     UIEvent.ShowSnackbar(
                         message = UIText.StringResource(R.string.signup_form_login_error),
