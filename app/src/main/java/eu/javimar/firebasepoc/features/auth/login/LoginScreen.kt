@@ -1,5 +1,12 @@
 package eu.javimar.firebasepoc.features.auth.login
 
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -56,180 +63,193 @@ fun LoginScreen(
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartIntentSenderForResult(),
+        onResult = { result ->
+            if(result.resultCode == ComponentActivity.RESULT_OK) {
+                onEvent(LoginEvent.SignIntent(result.data))
+            }
+        }
+    )
+
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(32.dp).padding(padding),
-            contentAlignment = Alignment.Center
+        AnimatedVisibility(
+            visible = !state.hasUser,
+            enter = fadeIn(animationSpec = tween(500)),
+            exit = fadeOut()
         ) {
-            ClickableText(
-                text = AnnotatedString(
-                    stringResource(id = R.string.signup_form_not_account)
-                ),
+            Box(
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(40.dp),
-                onClick = {
-                    onEvent(LoginEvent.Register)
-                },
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    textDecoration = TextDecoration.Underline,
-                )
-            )
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .fillMaxSize()
+                    .padding(32.dp).padding(padding),
+                contentAlignment = Alignment.Center
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_firebase),
-                    contentDescription = "Firebase",
-                    modifier = Modifier.size(100.dp)
-                )
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                Text(
-                    text = stringResource(id = R.string.signup_form_samples),
-                    textAlign = TextAlign.Center,
-                    style = TextStyle(fontSize = 30.sp)
-                )
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                TextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    label = {
-                        Text(
-                            text = stringResource(id = R.string.signup_form_email)
-                        )
-                    },
-                    value = state.email,
-                    keyboardActions = KeyboardActions(
-                        onNext = {
-                            focusManager.moveFocus(FocusDirection.Next)
-                        }
-                    ),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        keyboardType = KeyboardType.Email
-                    ),
-                    onValueChange = {
-                        onEvent(LoginEvent.EmailChanged(it))
-                    }
-                )
-                if(state.emailError != null) {
-                    Text(
-                        modifier = Modifier.align(Alignment.Start),
-                        text = stringResource(id = getErrorRes(state.emailError)),
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                TextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    label = {
-                        Text(
-                            text = stringResource(id = R.string.signup_form_pass)
-                        )
-                    },
-                    value = state.password,
-                    visualTransformation = PasswordVisualTransformation(),
-                    keyboardActions = KeyboardActions(
-                        onNext = {
-                            focusManager.moveFocus(FocusDirection.Next)
-                            keyboardController?.hide()
-                        }
-                    ),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        keyboardType = KeyboardType.Password
-                    ),
-                    onValueChange = {
-                        onEvent(LoginEvent.PasswordChanged(it))
-                    }
-                )
-                if(state.passwordError != null) {
-                    Text(
-                        modifier = Modifier.align(Alignment.Start),
-                        text = stringResource(id = getErrorRes(state.passwordError)),
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Button(
-                        onClick = {
-                            onEvent(LoginEvent.UserPassLogin)
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_firebase),
+                        contentDescription = "Firebase",
+                        modifier = Modifier.size(100.dp)
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    Text(
+                        text = stringResource(id = R.string.signup_form_samples),
+                        textAlign = TextAlign.Center,
+                        style = TextStyle(fontSize = 30.sp)
+                    )
+
+                    Spacer(modifier = Modifier.height(30.dp))
+
+                    TextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        label = {
+                            Text(
+                                text = stringResource(id = R.string.signup_form_email)
+                            )
                         },
-                        enabled = buttonState,
-                        shape = RoundedCornerShape(50.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp)
-                    ) {
+                        value = state.email,
+                        keyboardActions = KeyboardActions(
+                            onNext = {
+                                focusManager.moveFocus(FocusDirection.Next)
+                            }
+                        ),
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            keyboardType = KeyboardType.Email
+                        ),
+                        onValueChange = {
+                            onEvent(LoginEvent.EmailChanged(it))
+                        }
+                    )
+                    if(state.emailError != null) {
                         Text(
-                            text = stringResource(id = R.string.signup_form_login).uppercase()
+                            modifier = Modifier.align(Alignment.Start),
+                            text = stringResource(id = getErrorRes(state.emailError)),
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.labelSmall
                         )
                     }
-                }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
-                ClickableText(
-                    text = AnnotatedString(
-                        stringResource(id = R.string.signup_form_forgot_pass)
-                    ),
-                    onClick = {
-                        onEvent(LoginEvent.ForgotPass)
-                    },
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        textDecoration = TextDecoration.Underline,
+                    TextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        label = {
+                            Text(
+                                text = stringResource(id = R.string.signup_form_pass)
+                            )
+                        },
+                        value = state.password,
+                        visualTransformation = PasswordVisualTransformation(),
+                        keyboardActions = KeyboardActions(
+                            onNext = {
+                                focusManager.moveFocus(FocusDirection.Next)
+                                keyboardController?.hide()
+                            }
+                        ),
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            keyboardType = KeyboardType.Password
+                        ),
+                        onValueChange = {
+                            onEvent(LoginEvent.PasswordChanged(it))
+                        }
                     )
-                )
-                Spacer(modifier = Modifier.height(25.dp))
-                Text(
-                    text = stringResource(id = R.string.signup_form_continue_or),
-                    style = TextStyle(color = Color.Gray)
-                )
+                    if(state.passwordError != null) {
+                        Text(
+                            modifier = Modifier.align(Alignment.Start),
+                            text = stringResource(id = getErrorRes(state.passwordError)),
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                    }
 
-                Spacer(modifier = Modifier.height(25.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
 
-                SocialMediaButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = {
-                        onEvent(LoginEvent.GuestLogin)
-                    },
-                    text = stringResource(id = R.string.signup_form_continue_guest),
-                    icon = R.drawable.ic_incognito,
-                    color = Color(0xFF363636)
-                )
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Button(
+                            onClick = {
+                                onEvent(LoginEvent.UserPassLogin)
+                            },
+                            enabled = buttonState,
+                            shape = RoundedCornerShape(50.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(50.dp)
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.signup_form_login).uppercase()
+                            )
+                        }
+                    }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
 
-                SocialMediaButton(
-                    onClick = {
+                    ClickableText(
+                        text = AnnotatedString(
+                            stringResource(id = R.string.signup_form_forgot_pass)
+                        ),
+                        onClick = {
+                            onEvent(LoginEvent.ForgotPass)
+                        },
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            textDecoration = TextDecoration.Underline,
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(25.dp))
+                    Text(
+                        text = stringResource(id = R.string.signup_form_continue_or),
+                        style = TextStyle(color = Color.Gray)
+                    )
 
-                    },
-                    text = stringResource(id = R.string.signup_form_continue_google),
-                    icon = R.drawable.ic_google,
-                    color = Color(0xFFF1F1F1)
-                )
+                    Spacer(modifier = Modifier.height(25.dp))
 
-                Spacer(modifier = Modifier.height(32.dp))
+                    SocialMediaButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = {
+                            onEvent(LoginEvent.GuestLogin)
+                        },
+                        text = stringResource(id = R.string.signup_form_continue_guest),
+                        icon = R.drawable.ic_incognito,
+                        color = Color(0xFF363636)
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    SocialMediaButton(
+                        onClick = {
+                            onEvent(LoginEvent.GoogleLogin(launcher))
+                        },
+                        text = stringResource(id = R.string.signup_form_continue_google),
+                        icon = R.drawable.ic_google,
+                        color = Color(0xFFF1F1F1)
+                    )
+
+                    ClickableText(
+                        text = AnnotatedString(
+                            stringResource(id = R.string.signup_form_not_account)
+                        ),
+                        modifier = Modifier
+                            .padding(16.dp),
+                        onClick = {
+                            onEvent(LoginEvent.SignUp)
+                        },
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            textDecoration = TextDecoration.Underline,
+                        )
+                    )
+                }
             }
         }
     }

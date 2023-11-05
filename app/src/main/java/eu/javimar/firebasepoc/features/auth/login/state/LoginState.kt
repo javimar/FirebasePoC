@@ -3,6 +3,7 @@ package eu.javimar.firebasepoc.features.auth.login.state
 import eu.javimar.domain.auth.enums.AuthFormErrors
 
 data class LoginState(
+    val hasUser: Boolean = false,
     val email: String = "",
     val emailError: AuthFormErrors? = null,
     val password: String = "",

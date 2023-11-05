@@ -1,11 +1,16 @@
 package eu.javimar.firebasepoc.features.auth.login
 
+import android.content.Intent
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.IntentSenderRequest
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import eu.javimar.coachpoc.R
 import eu.javimar.domain.auth.usecases.ValidateEmailUseCase
@@ -41,6 +46,9 @@ class LoginViewModel @Inject constructor(
     val event = _eventChannel.receiveAsFlow()
 
     init {
+        state = state.copy(
+            hasUser = googleAuthManager.getSignedInUser() != null
+        )
         if(googleAuthManager.getSignedInUser() != null) {
             sendUiEvent(UIEvent.Navigate(BottomGraphScreens.Profile.route))
         }
@@ -50,12 +58,48 @@ class LoginViewModel @Inject constructor(
         when(event) {
             is LoginEvent.EmailChanged -> state = state.copy(email = event.email)
             is LoginEvent.PasswordChanged -> state = state.copy(password = event.password)
-            LoginEvent.Register -> {
+            LoginEvent.SignUp -> {
                 sendUiEvent((UIEvent.Navigate(AuthGraphScreens.SignUp.route)))
             }
+            LoginEvent.ForgotPass -> sendUiEvent((UIEvent.Navigate(AuthGraphScreens.ForgotPass.route)))
             LoginEvent.GuestLogin -> loginInAnonymous()
             LoginEvent.UserPassLogin -> checkValidation()
-            LoginEvent.ForgotPass -> sendUiEvent((UIEvent.Navigate(AuthGraphScreens.ForgotPass.route)))
+            is LoginEvent.GoogleLogin -> loginWithGoogle(event.launcher)
+            is LoginEvent.SignIntent -> googleSignInIntent(event.intent)
+        }
+    }
+
+    private fun googleSignInIntent(intent: Intent?) {
+        viewModelScope.launch {
+            val signInResult = googleAuthManager.getGoogleSignWithIntent(
+                intent = intent ?: return@launch
+            )
+            onGoogleSignInResult(signInResult)
+        }
+    }
+
+    private fun onGoogleSignInResult(result: AuthRes<FirebaseUser>) {
+        when(result) {
+            is AuthRes.Success -> {
+                sendUiEvent(UIEvent.Navigate(BottomGraphScreens.Profile.route))
+            }
+            is AuthRes.Error -> {
+                sendUiEvent(UIEvent.ShowSnackbar(
+                    message = UIText.DynamicString(result.errorMessage))
+                )
+                logd(result.errorMessage)
+            }
+        }
+    }
+
+    private fun loginWithGoogle(launcher: ManagedActivityResultLauncher<IntentSenderRequest, ActivityResult>) {
+        viewModelScope.launch {
+            val signInIntentSender = googleAuthManager.signIn()
+            launcher.launch(
+                IntentSenderRequest.Builder(
+                    signInIntentSender ?: return@launch
+                ).build()
+            )
         }
     }
 
