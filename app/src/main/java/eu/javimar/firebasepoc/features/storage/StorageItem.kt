@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,7 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import eu.javimar.domain.storage.model.FileStorageInfo
-import eu.javimar.firebasepoc.core.components.CoilImage
+import eu.javimar.firebasepoc.core.components.RenderFileIcon
 import eu.javimar.firebasepoc.ui.theme.Pink80
 import eu.javimar.firebasepoc.ui.theme.Purple80
 import eu.javimar.firebasepoc.ui.theme.PurpleGrey80
@@ -39,26 +38,26 @@ fun StorageItem(
             .clickable {
                 onEventClick(fileInfo.url)
             }
-            .padding(vertical = 8.dp)
+            .padding(vertical = 4.dp)
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
                         Purple80, PurpleGrey80, Pink80
                     ),
                 ),
-                RoundedCornerShape(24.dp),
+                RoundedCornerShape(16.dp),
             )
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 12.dp, top = 8.dp, bottom = 8.dp, end = 12.dp),
+                .padding(start = 12.dp, end = 12.dp),
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
             ) {
-                CoilImage(
+                RenderFileIcon(
                     fileUrl = fileInfo.url,
                     contentType = fileInfo.contentType
                 )
@@ -86,15 +85,14 @@ fun StorageItem(
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = fileInfo.contentType,
-                style = MaterialTheme.typography.titleMedium,
-            )
-            Text(
-                text = fileInfo.path,
-                style = MaterialTheme.typography.titleMedium,
-            )
+//            Text(
+//                text = fileInfo.contentType,
+//                style = MaterialTheme.typography.titleMedium,
+//            )
+//            Text(
+//                text = fileInfo.path,
+//                style = MaterialTheme.typography.titleMedium,
+//            )
         }
     }
 }

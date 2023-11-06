@@ -1,9 +1,11 @@
 # FirebasePoC
 Firebase Auth and Storage PoC with Jetpack Compose
 
-**Work in Progress!!**
+This PoC app shows how to implement some of the most used Firebase Services such as
+**Auth, Analytics, Could Storage, and Cloud Messaging** with Dagger Hilt, a clean architecture approach, 
+and examples on best practices of Compose Navigation.
 
-This PoC app leverages **Firebase Auth and Storage** with Dagger Hilt and provides examples on best practices of Compose Navigation. 
+You will need to set up a Firebase project on your own to run the app.
 
 [![Kotlin](https://img.shields.io/badge/kotlin-1.9.0-blue.svg?logo=kotlin)](http://kotlinlang.org)
 
