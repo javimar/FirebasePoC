@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -39,6 +38,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import eu.javimar.coachpoc.R
+import eu.javimar.firebasepoc.core.utils.convertEpochToDateTime
 import eu.javimar.firebasepoc.features.BottomBar
 import eu.javimar.firebasepoc.features.auth.components.LogoutDialog
 
@@ -100,23 +100,52 @@ fun ProfileScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(vertical = 12.dp, horizontal = 36.dp)
                 .padding(it),
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             CheckProfilePicture(
                 photoUrl = state.user?.photoUrl,
                 size = 150.dp
             )
-            if(state.user?.displayName != null) {
-                Text(
-                    text = state.user.displayName!!,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 36.sp
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-            }
+            Text(
+                text = "UID: ${state.tokenInfo.userId}",
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 14.sp
+            )
+            Text(
+                text = "Issued: ${convertEpochToDateTime(state.tokenInfo.issuedAt)}",
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 14.sp
+            )
+            Text(
+                text = "Auth: ${convertEpochToDateTime(state.tokenInfo.authTime)}",
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 14.sp
+            )
+            Text(
+                text = "Expires: ${convertEpochToDateTime(state.tokenInfo.expiration)}",
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 14.sp
+            )
+            Text(
+                text = "Identities: ${state.tokenInfo.identities}",
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 14.sp
+            )
+            Text(
+                text = "Provider: ${state.tokenInfo.signInProvider.name.uppercase()}",
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 14.sp
+            )
+
             if (state.showExitDialog) {
                 LogoutDialog(
                     onConfirmLogout = {

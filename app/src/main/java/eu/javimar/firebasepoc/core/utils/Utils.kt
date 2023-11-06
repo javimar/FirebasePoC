@@ -20,10 +20,21 @@ fun createFolderNameWithDateTime(folderName: String): String {
     return "$folderName $formattedDateTime"
 }
 
-fun convertMillisToLocalDate(utcMillis: Long): String {
+fun convertMillisToDate(utcMillis: Long): String {
     val instant = Instant.ofEpochMilli(utcMillis)
     val zoneId = ZoneId.of("UTC") // set the time zone to UTC
-    return instant.atZone(zoneId).toLocalDate().formatDateToStringShort()
+    return instant.atZone(zoneId).toLocalDate().formatDateToStringLong()
 }
 
-fun LocalDate.formatDateToStringShort(): String = format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
+fun convertEpochToDateTime(epochSeconds: Long): String {
+    val instant = Instant.ofEpochSecond(epochSeconds)
+    val myZoneId = ZoneId.systemDefault() // use the system's default time zone
+    val localDateTime = instant.atZone(myZoneId).toLocalDateTime()
+    val dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
+    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+    val dateStr = localDateTime.toLocalDate().format(dateFormatter)
+    val timeStr = localDateTime.toLocalTime().format(timeFormatter)
+    return "$dateStr $timeStr"
+}
+
+fun LocalDate.formatDateToStringLong(): String = format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG))

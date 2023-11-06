@@ -7,7 +7,7 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.storage
 import eu.javimar.domain.auth.utils.FileResult
 import eu.javimar.domain.storage.model.FileStorageInfo
-import eu.javimar.firebasepoc.core.utils.convertMillisToLocalDate
+import eu.javimar.firebasepoc.core.utils.convertMillisToDate
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
 
@@ -49,7 +49,7 @@ class StorageManager(
                     name = item.name,
                     contentType = meta.contentType.toString(),
                     sizeBytes = meta.sizeBytes.toString(),
-                    created = convertMillisToLocalDate(meta.creationTimeMillis)
+                    created = convertMillisToDate(meta.creationTimeMillis)
                 )
             )
         }

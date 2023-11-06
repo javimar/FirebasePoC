@@ -29,18 +29,25 @@ class ProfileViewModel @Inject constructor(
     val event = _eventChannel.receiveAsFlow()
 
     init {
-        analyticsManager.logScreenView(BottomGraphScreens.Profile.route)
-        val userData = googleAuthManager.getSignedInUser()
-        if(userData != null) {
-            state = state.copy(
-                user = userData
-            )
-        }
+        setProfileScreen()
     }
 
     fun onEvent(event: ProfileEvent) {
         when(event) {
             ProfileEvent.SignOut -> signOut()
+        }
+    }
+
+    private fun setProfileScreen() {
+        viewModelScope.launch {
+            analyticsManager.logScreenView(BottomGraphScreens.Profile.route)
+            val userData = googleAuthManager.getSignedInUser()
+            if(userData != null) {
+                state = state.copy(
+                    user = userData,
+                    tokenInfo = googleAuthManager.getTokenInfo()
+                )
+            }
         }
     }
 

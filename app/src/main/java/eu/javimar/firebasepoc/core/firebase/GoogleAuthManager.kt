@@ -12,7 +12,9 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import eu.javimar.coachpoc.BuildConfig
+import eu.javimar.domain.auth.model.TokenInfo
 import eu.javimar.domain.auth.utils.FileResult
+import eu.javimar.firebasepoc.core.utils.JWTUtils
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
 
@@ -85,6 +87,11 @@ class GoogleAuthManager(
     }
 
     fun getSignedInUser(): FirebaseUser? = firebaseAuth.currentUser
+
+    suspend fun getTokenInfo(): TokenInfo {
+        val token = firebaseAuth.currentUser?.getIdToken(false)?.await()?.token
+        return JWTUtils(token).extractInformation()
+    }
 
     suspend fun getGoogleSignWithIntent(intent: Intent): FileResult<FirebaseUser> {
         val credential = googleSignInClient.getSignInCredentialFromIntent(intent)
