@@ -1,4 +1,4 @@
-package eu.javimar.firebasepoc.features.storage
+package eu.javimar.firebasepoc.features.storage.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,7 +28,7 @@ import eu.javimar.firebasepoc.ui.theme.Purple80
 import eu.javimar.firebasepoc.ui.theme.PurpleGrey80
 
 @Composable
-fun StorageItem(
+fun FileItem(
     fileInfo: FileStorageInfo,
     onEventClick: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -73,7 +73,7 @@ fun StorageItem(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleMedium,
                     )
                     Text(
                         text = fileInfo.created,
@@ -85,14 +85,6 @@ fun StorageItem(
                     )
                 }
             }
-//            Text(
-//                text = fileInfo.contentType,
-//                style = MaterialTheme.typography.titleMedium,
-//            )
-//            Text(
-//                text = fileInfo.path,
-//                style = MaterialTheme.typography.titleMedium,
-//            )
         }
     }
 }
@@ -100,7 +92,7 @@ fun StorageItem(
 @Preview(showBackground = true)
 @Composable
 fun ItemPreview() {
-    StorageItem(
+    FileItem(
         FileStorageInfo(
             url = "",
             path = "/Images/baby.jpg",

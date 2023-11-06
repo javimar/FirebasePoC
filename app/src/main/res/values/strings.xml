@@ -5,7 +5,8 @@
 
     <!-- NAV TITLES -->
     <string name="nav_profile">Profile</string>
-    <string name="nav_storage">Storage</string>
+    <string name="nav_other_storage">Other files</string>
+    <string name="nav_coach_storage">My training</string>
 
     <!-- STORAGE -->
     <string name="storage_upload_ok">File uploaded</string>

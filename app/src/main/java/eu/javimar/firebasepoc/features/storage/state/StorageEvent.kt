@@ -7,6 +7,7 @@ import androidx.activity.result.ActivityResult
 
 sealed interface StorageEvent {
     data class GetUriFile(val uri: Uri?) : StorageEvent
-    data class AddItem(val launcher: ManagedActivityResultLauncher<Intent, ActivityResult>) : StorageEvent
+    data class AddItem(val launcher: ManagedActivityResultLauncher<Intent, ActivityResult>) :
+        StorageEvent
     data class FileClick(val fileUri: String): StorageEvent
 }

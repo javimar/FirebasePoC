@@ -11,10 +11,7 @@ import eu.javimar.firebasepoc.core.utils.convertMillisToDate
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
 
-class StorageManager(
-    private val uid: String
-) {
-
+class StorageManager {
     private val storage = Firebase.storage
     private val storageRef = storage.reference
 
@@ -35,24 +32,28 @@ class StorageManager(
         }
     }
 
-    suspend fun getFilesFromStorage(remoteFolder: String): List<FileStorageInfo> {
-        val fileInfo = mutableListOf<FileStorageInfo>()
-        val listResults: ListResult = getStorageReference(remoteFolder).listAll().await()
-        for(item in listResults.items) {
-
-            val meta = item.metadata.await()
-
-            fileInfo.add(
-                FileStorageInfo(
-                    url = item.downloadUrl.await().toString(),
-                    path = item.path,
-                    name = item.name,
-                    contentType = meta.contentType.toString(),
-                    sizeBytes = meta.sizeBytes.toString(),
-                    created = convertMillisToDate(meta.creationTimeMillis)
+    suspend fun getFilesFromStorage(remoteFolder: String): FileResult<List<FileStorageInfo>> {
+        return try {
+            val fileInfo = mutableListOf<FileStorageInfo>()
+            val listResults: ListResult = getStorageReference(remoteFolder).listAll().await()
+            for(item in listResults.items) {
+                val meta = item.metadata.await()
+                fileInfo.add(
+                    FileStorageInfo(
+                        url = item.downloadUrl.await().toString(),
+                        path = item.path,
+                        name = item.name,
+                        contentType = meta.contentType.toString(),
+                        sizeBytes = meta.sizeBytes.toString(),
+                        created = convertMillisToDate(meta.creationTimeMillis)
+                    )
                 )
-            )
+            }
+            FileResult.Success(fileInfo)
+        } catch(e: Exception) {
+            e.printStackTrace()
+            if(e is CancellationException) throw e
+            FileResult.Error(e.message ?: "Error retrieving files")
         }
-        return fileInfo
     }
 }

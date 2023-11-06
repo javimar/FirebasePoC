@@ -1,4 +1,4 @@
-package eu.javimar.firebasepoc.features.storage
+package eu.javimar.firebasepoc.features.storage.training
 
 import android.content.Intent
 import android.net.Uri
@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class StorageViewModel @Inject constructor(
+class TrainingViewModel @Inject constructor(
     private val storageManager: StorageManager,
     private val analyticsManager: AnalyticsManager,
 ): ViewModel() {
@@ -36,7 +36,7 @@ class StorageViewModel @Inject constructor(
         private set
 
     init {
-        analyticsManager.logScreenView(BottomGraphScreens.Storage.route)
+        analyticsManager.logScreenView(BottomGraphScreens.OtherFiles.route)
         fetchStorage()
     }
 
@@ -84,13 +84,22 @@ class StorageViewModel @Inject constructor(
 
     private fun fetchStorage() {
         viewModelScope.launch {
-            val files = storageManager.getFilesFromStorage("Images")
-            if(files.isEmpty()) {
-                sendUiEvent(UIEvent.ShowSnackbar(UIText.StringResource(R.string.storage_no_elements_error)))
-            } else {
-                state = state.copy(
-                    gallery = files
-                )
+            when(val result = storageManager.getFilesFromStorage("Entrenos")) {
+                is FileResult.Success -> {
+                    if(result.data.isEmpty()) {
+                        sendUiEvent(UIEvent.ShowSnackbar(UIText.StringResource(R.string.storage_no_elements_error)))
+                    } else {
+                        state = state.copy(
+                            gallery = result.data
+                        )
+                    }
+                }
+                is FileResult.Error -> {
+                    analyticsManager.logError("Error obteniendo archivos desde storage: ${result.errorMessage}")
+                    sendUiEvent(UIEvent.ShowSnackbar(
+                        message = UIText.DynamicString(result.errorMessage))
+                    )
+                }
             }
         }
     }

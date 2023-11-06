@@ -11,6 +11,7 @@ import eu.javimar.firebasepoc.core.nav.destinations.loginDestination
 import eu.javimar.firebasepoc.core.nav.destinations.profileDestination
 import eu.javimar.firebasepoc.core.nav.destinations.signUpDestination
 import eu.javimar.firebasepoc.core.nav.destinations.storageDestination
+import eu.javimar.firebasepoc.core.nav.destinations.trainingDestination
 import eu.javimar.firebasepoc.core.nav.screens.AuthGraphScreens
 import eu.javimar.firebasepoc.core.nav.screens.BottomGraphScreens
 import eu.javimar.firebasepoc.features.HomeMain
@@ -58,6 +59,7 @@ fun HomeNavGraph(
     ) {
         profileDestination(navController)
         storageDestination(navController)
+        trainingDestination(navController)
         authNavGraph(navController)
     }
 }

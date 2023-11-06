@@ -1,4 +1,4 @@
-package eu.javimar.firebasepoc.features.storage
+package eu.javimar.firebasepoc.features.storage.otherfiles
 
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -11,9 +11,9 @@ import eu.javimar.firebasepoc.core.utils.UIEvent
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun StorageMain(
+fun OtherFilesMain(
     navController: NavHostController,
-    viewModel: StorageViewModel = hiltViewModel()
+    viewModel: OtherFilesViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
@@ -30,7 +30,7 @@ fun StorageMain(
         }
     }
 
-    StorageScreen(
+    OtherFilesScreen(
         state = viewModel.state,
         onEvent = viewModel::onEvent,
         snackbarHostState = snackbarHostState,

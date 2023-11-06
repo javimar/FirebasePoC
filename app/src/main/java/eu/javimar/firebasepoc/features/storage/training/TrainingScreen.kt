@@ -1,4 +1,4 @@
-package eu.javimar.firebasepoc.features.storage
+package eu.javimar.firebasepoc.features.storage.training
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -27,11 +27,12 @@ import androidx.navigation.compose.rememberNavController
 import eu.javimar.firebasepoc.core.components.LoadWebUrl
 import eu.javimar.firebasepoc.core.components.rememberLifecycleEvent
 import eu.javimar.firebasepoc.features.BottomBar
+import eu.javimar.firebasepoc.features.storage.components.FileItem
 import eu.javimar.firebasepoc.features.storage.state.StorageEvent
 import eu.javimar.firebasepoc.features.storage.state.StorageState
 
 @Composable
-fun StorageScreen(
+fun TrainingScreen(
     state: StorageState,
     onEvent: (StorageEvent) -> Unit,
     navController: NavHostController,
@@ -75,7 +76,7 @@ fun StorageScreen(
                     .padding(horizontal = 16.dp),
             ) {
                 items(state.gallery) { fileInfo ->
-                    StorageItem(
+                    FileItem(
                         fileInfo = fileInfo,
                         onEventClick = { uri ->
                             onEvent(StorageEvent.FileClick(uri))
@@ -101,7 +102,7 @@ fun StorageScreen(
 @Preview(showBackground = true)
 @Composable
 fun StoragePreview() {
-    StorageScreen(
+    TrainingScreen(
         state = StorageState(),
         onEvent = {},
         navController = rememberNavController(),

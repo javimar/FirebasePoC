@@ -22,7 +22,8 @@ fun BottomBar(
 ) {
     val navRoutes = listOf(
         BottomGraphScreens.Profile,
-        BottomGraphScreens.Storage,
+        BottomGraphScreens.Training,
+        BottomGraphScreens.OtherFiles,
     )
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
