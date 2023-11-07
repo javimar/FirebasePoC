@@ -13,7 +13,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import eu.javimar.coachpoc.BuildConfig
 import eu.javimar.domain.auth.model.TokenInfo
-import eu.javimar.domain.auth.utils.FileResult
+import eu.javimar.firebasepoc.core.utils.FileResult
 import eu.javimar.firebasepoc.core.utils.JWTUtils
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
@@ -29,7 +29,7 @@ class GoogleAuthManager(
             val result = firebaseAuth.signInAnonymously().await()
             FileResult.Success(result.user ?: throw Exception("Error while login in anonymously"))
         } catch(e: Exception) {
-            FileResult.Error(e.message ?: "Error while login in anonymously")
+            FileResult.processError(e)
         }
     }
 
@@ -41,7 +41,7 @@ class GoogleAuthManager(
             val authResult = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
             FileResult.Success(authResult.user)
         } catch(e: Exception) {
-            FileResult.Error(e.message ?: "Error while creating user")
+            FileResult.processError(e)
         }
     }
 
@@ -50,7 +50,7 @@ class GoogleAuthManager(
             val authResult = firebaseAuth.signInWithEmailAndPassword(email, password).await()
             FileResult.Success(authResult.user)
         } catch(e: Exception) {
-            FileResult.Error(e.message ?: "Error while signing in")
+            FileResult.processError(e)
         }
     }
 
@@ -59,7 +59,7 @@ class GoogleAuthManager(
             firebaseAuth.sendPasswordResetEmail(email).await()
             FileResult.Success(Unit)
         } catch(e: Exception) {
-            FileResult.Error(e.message ?: "Error white resetting password")
+            FileResult.processError(e)
         }
     }
 
@@ -103,7 +103,7 @@ class GoogleAuthManager(
         } catch(e: Exception) {
             e.printStackTrace()
             if(e is CancellationException) throw e
-            FileResult.Error(e.message ?: "Login Google error")
+            FileResult.processError(e)
         }
     }
 
@@ -114,7 +114,6 @@ class GoogleAuthManager(
             ).await()
         }
         catch(e: Exception) {
-            FileResult.Error(e.message ?: "Sign in Error")
             if(e is CancellationException) throw e
             null
         }

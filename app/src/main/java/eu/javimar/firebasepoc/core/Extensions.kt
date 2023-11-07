@@ -1,6 +1,20 @@
 package eu.javimar.firebasepoc.core
 
 import android.util.Log
+import eu.javimar.coachpoc.R
+import eu.javimar.firebasepoc.core.utils.FileResult.Companion.ErrorCode
+import eu.javimar.firebasepoc.core.utils.UIText
+
+fun ErrorCode.issueStorageNetworkError(): UIText {
+    return when(this) {
+        ErrorCode.PERMISSION_DENIED -> {
+            UIText.StringResource(R.string.storage_no_permission_error)
+        }
+        ErrorCode.UNKNOWN_ERROR -> {
+            UIText.StringResource(R.string.unknown_error)
+        }
+    }
+}
 
 val Any.TAG: String
     get() {

@@ -44,8 +44,8 @@ class AnalyticsManager(context: Context) {
 
     fun logError(error: String) {
         val params = Bundle().apply {
-            putString("error", error)
+            putString("error_name", error)
         }
-        logEvent("error", params)
+        logEvent("errors_issued", params)
     }
 }

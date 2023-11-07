@@ -11,6 +11,7 @@
     <!-- STORAGE -->
     <string name="storage_upload_ok">File uploaded</string>
     <string name="storage_no_elements_error">There are no files to show</string>
+    <string name="storage_no_permission_error">You don\'t have permission to access this content. Please contact you administrator</string>
 
     <!-- AUTH -->
     <string name="signup_form_recover_pass_email_sent">Email sent</string>
@@ -42,5 +43,6 @@
     <string name="signup_password_requirement_symbols">A symbol.</string>
     <string name="signup_password_requirement_characters">An uppercase letter, a lowercase one and a number.</string>
 
+    <string name="unknown_error">An error has occurred. Please try again later.</string>
 
 </resources>

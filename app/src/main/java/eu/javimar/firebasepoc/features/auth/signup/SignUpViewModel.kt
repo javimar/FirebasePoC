@@ -12,10 +12,10 @@ import eu.javimar.domain.auth.usecases.ValidateConfirmPassUseCase
 import eu.javimar.domain.auth.usecases.ValidateEmailUseCase
 import eu.javimar.domain.auth.usecases.ValidatePassUseCase
 import eu.javimar.domain.auth.utils.ConfirmPassChecker
-import eu.javimar.domain.auth.utils.FileResult
 import eu.javimar.firebasepoc.core.firebase.AnalyticsManager
 import eu.javimar.firebasepoc.core.firebase.GoogleAuthManager
 import eu.javimar.firebasepoc.core.nav.screens.AuthGraphScreens
+import eu.javimar.firebasepoc.core.utils.FileResult
 import eu.javimar.firebasepoc.core.utils.UIEvent
 import eu.javimar.firebasepoc.core.utils.UIText
 import eu.javimar.firebasepoc.features.auth.signup.state.SignUpEvent
@@ -86,7 +86,7 @@ class SignUpViewModel @Inject constructor(
                     sendUiEvent(UIEvent.PopBackStack)
                 }
                 is FileResult.Error -> {
-                    analyticsManager.logError("Error al crear cuenta: ${result.errorMessage}")
+                    analyticsManager.logError("Error al crear cuenta: ${result.error.detailedMessage}")
                     sendUiEvent(UIEvent.ShowSnackbar(UIText.StringResource(R.string.signup_form_create_error)))
                 }
             }

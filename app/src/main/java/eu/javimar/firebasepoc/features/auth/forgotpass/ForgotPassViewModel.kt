@@ -9,10 +9,10 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import eu.javimar.coachpoc.R
 import eu.javimar.domain.auth.usecases.ValidateEmailUseCase
-import eu.javimar.domain.auth.utils.FileResult
 import eu.javimar.firebasepoc.core.firebase.AnalyticsManager
 import eu.javimar.firebasepoc.core.firebase.GoogleAuthManager
 import eu.javimar.firebasepoc.core.nav.screens.AuthGraphScreens
+import eu.javimar.firebasepoc.core.utils.FileResult
 import eu.javimar.firebasepoc.core.utils.UIEvent
 import eu.javimar.firebasepoc.core.utils.UIText
 import eu.javimar.firebasepoc.features.auth.forgotpass.state.ForgotPassEvent
@@ -74,8 +74,9 @@ class ForgotPassViewModel @Inject constructor(
                     sendUiEvent(UIEvent.PopBackStack)
                 }
                 is FileResult.Error -> {
-                    analyticsManager.logError("Error Reset password: ${result.errorMessage}")
-                    sendUiEvent(UIEvent.ShowSnackbar(message = UIText.DynamicString(result.errorMessage)))
+                    sendUiEvent(UIEvent.ShowSnackbar(UIText.DynamicString(result.error.message)))
+                    analyticsManager.logError("Error Reset password: ${result.error.detailedMessage}")
+                    sendUiEvent(UIEvent.ShowSnackbar(message = UIText.DynamicString(result.error.detailedMessage)))
                 }
             }
         }

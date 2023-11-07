@@ -12,10 +12,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import eu.javimar.coachpoc.R
-import eu.javimar.domain.auth.utils.FileResult
 import eu.javimar.firebasepoc.core.firebase.AnalyticsManager
 import eu.javimar.firebasepoc.core.firebase.StorageManager
+import eu.javimar.firebasepoc.core.issueStorageNetworkError
 import eu.javimar.firebasepoc.core.nav.screens.BottomGraphScreens
+import eu.javimar.firebasepoc.core.utils.FileResult
 import eu.javimar.firebasepoc.core.utils.UIEvent
 import eu.javimar.firebasepoc.core.utils.UIText
 import eu.javimar.firebasepoc.core.utils.createFileName
@@ -36,6 +37,7 @@ class TrainingViewModel @Inject constructor(
         private set
 
     init {
+        resetError()
         analyticsManager.logScreenView(BottomGraphScreens.OtherFiles.route)
         fetchStorage()
     }
@@ -60,6 +62,7 @@ class TrainingViewModel @Inject constructor(
     }
 
     private fun readRemoteUri(uri: Uri?) {
+        resetError()
         uri?.let {
             viewModelScope.launch {
                 when(val result = storageManager
@@ -72,9 +75,9 @@ class TrainingViewModel @Inject constructor(
                         )
                     }
                     is FileResult.Error -> {
-                        analyticsManager.logError("Error subiendo a storage: ${result.errorMessage}")
-                        sendUiEvent(UIEvent.ShowSnackbar(
-                            message = UIText.DynamicString(result.errorMessage))
+                        analyticsManager.logError("Error subiendo a storage: ${result.error.detailedMessage}")
+                        state = state.copy(
+                            errorMessage = result.error.errorCode.issueStorageNetworkError()
                         )
                     }
                 }
@@ -83,25 +86,28 @@ class TrainingViewModel @Inject constructor(
     }
 
     private fun fetchStorage() {
+        resetError()
         viewModelScope.launch {
-            when(val result = storageManager.getFilesFromStorage("Entrenos")) {
+            state = when(val result = storageManager.getFilesFromStorage("Entrenos")) {
                 is FileResult.Success -> {
-                    if(result.data.isEmpty()) {
-                        sendUiEvent(UIEvent.ShowSnackbar(UIText.StringResource(R.string.storage_no_elements_error)))
-                    } else {
-                        state = state.copy(
-                            gallery = result.data
-                        )
-                    }
+                    state.copy(
+                        gallery = result.data,
+                        emptyGallery = result.data.isEmpty()
+                    )
                 }
+
                 is FileResult.Error -> {
-                    analyticsManager.logError("Error obteniendo archivos desde storage: ${result.errorMessage}")
-                    sendUiEvent(UIEvent.ShowSnackbar(
-                        message = UIText.DynamicString(result.errorMessage))
+                    analyticsManager.logError("Error obteniendo archivos desde storage: ${result.error.detailedMessage}")
+                    state.copy(
+                        errorMessage = result.error.errorCode.issueStorageNetworkError()
                     )
                 }
             }
         }
+    }
+
+    private fun resetError() {
+        state = state.copy(errorMessage = null)
     }
 
     private fun sendUiEvent(event: UIEvent) {

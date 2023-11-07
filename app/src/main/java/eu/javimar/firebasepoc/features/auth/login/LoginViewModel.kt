@@ -12,13 +12,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
-import eu.javimar.coachpoc.R
 import eu.javimar.domain.auth.usecases.ValidateEmailUseCase
-import eu.javimar.domain.auth.utils.FileResult
 import eu.javimar.firebasepoc.core.firebase.AnalyticsManager
 import eu.javimar.firebasepoc.core.firebase.GoogleAuthManager
 import eu.javimar.firebasepoc.core.nav.screens.AuthGraphScreens
 import eu.javimar.firebasepoc.core.nav.screens.BottomGraphScreens
+import eu.javimar.firebasepoc.core.utils.FileResult
 import eu.javimar.firebasepoc.core.utils.UIEvent
 import eu.javimar.firebasepoc.core.utils.UIText
 import eu.javimar.firebasepoc.features.auth.login.state.LoginEvent
@@ -84,9 +83,9 @@ class LoginViewModel @Inject constructor(
                 sendUiEvent(UIEvent.Navigate(BottomGraphScreens.Profile.route))
             }
             is FileResult.Error -> {
-                analyticsManager.logError("Error Iniciar sesión Google: ${result.errorMessage}")
+                analyticsManager.logError("Error Iniciar sesión Google: ${result.error.detailedMessage}")
                 sendUiEvent(UIEvent.ShowSnackbar(
-                    message = UIText.DynamicString(result.errorMessage))
+                    message = UIText.DynamicString(result.error.message))
                 )
             }
         }
@@ -113,9 +112,10 @@ class LoginViewModel @Inject constructor(
                     sendUiEvent(UIEvent.Navigate(BottomGraphScreens.Profile.route))
                 }
                 is FileResult.Error -> {
-                    analyticsManager.logError("Error Iniciar sesión usuario y contraseña: ${result.errorMessage}")
+                    analyticsManager
+                        .logError("Error Iniciar sesión usuario y contraseña: ${result.error.detailedMessage}")
                     sendUiEvent(UIEvent.ShowSnackbar(
-                        message = UIText.DynamicString(result.errorMessage))
+                        message = UIText.DynamicString(result.error.message))
                     )
                 }
             }
@@ -130,9 +130,9 @@ class LoginViewModel @Inject constructor(
                     sendUiEvent(UIEvent.Navigate(BottomGraphScreens.Profile.route))
                 }
                 is FileResult.Error -> {
-                    analyticsManager.logError("Error login invitado: ${result.errorMessage}")
+                    analyticsManager.logError("Error login invitado: ${result.error.detailedMessage}")
                     UIEvent.ShowSnackbar(
-                        message = UIText.StringResource(R.string.signup_form_login_error),
+                        message = UIText.DynamicString(result.error.message)
                     )
                 }
             }

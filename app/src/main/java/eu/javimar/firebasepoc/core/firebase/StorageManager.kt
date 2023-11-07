@@ -5,10 +5,9 @@ import com.google.firebase.Firebase
 import com.google.firebase.storage.ListResult
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.storage
-import eu.javimar.domain.auth.utils.FileResult
 import eu.javimar.domain.storage.model.FileStorageInfo
+import eu.javimar.firebasepoc.core.utils.FileResult
 import eu.javimar.firebasepoc.core.utils.convertMillisToDate
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
 
 class StorageManager {
@@ -27,8 +26,7 @@ class StorageManager {
             FileResult.Success(Unit)
         } catch(e: Exception) {
             e.printStackTrace()
-            if(e is CancellationException) throw e
-            FileResult.Error(e.message ?: "Error uploading file")
+            FileResult.processError(e)
         }
     }
 
@@ -52,8 +50,7 @@ class StorageManager {
             FileResult.Success(fileInfo)
         } catch(e: Exception) {
             e.printStackTrace()
-            if(e is CancellationException) throw e
-            FileResult.Error(e.message ?: "Error retrieving files")
+            FileResult.processError(e)
         }
     }
 }

@@ -14,13 +14,13 @@ import androidx.compose.ui.unit.dp
 fun ImagePainter(
     modifier: Modifier = Modifier,
     @DrawableRes painter: Int,
-    color: Color,
+    color: Color? = null,
 ) {
     Image(
         painter = painterResource(id = painter),
         modifier = modifier
             .width(48.dp),
-        colorFilter = ColorFilter.tint(color),
+        colorFilter = color?.let {ColorFilter.tint(color) },
         contentDescription = null
     )
 }

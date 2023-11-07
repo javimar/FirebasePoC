@@ -7,10 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import eu.javimar.coachpoc.R
-import eu.javimar.domain.auth.utils.FileResult
 import eu.javimar.firebasepoc.core.firebase.AnalyticsManager
 import eu.javimar.firebasepoc.core.firebase.StorageManager
+import eu.javimar.firebasepoc.core.issueStorageNetworkError
 import eu.javimar.firebasepoc.core.nav.screens.BottomGraphScreens
+import eu.javimar.firebasepoc.core.utils.FileResult
 import eu.javimar.firebasepoc.core.utils.UIEvent
 import eu.javimar.firebasepoc.core.utils.UIText
 import eu.javimar.firebasepoc.features.storage.state.StorageEvent
@@ -45,6 +46,7 @@ class OtherFilesViewModel @Inject constructor(
     }
 
     private fun fetchStorage() {
+        resetError()
         viewModelScope.launch {
             when(val result = storageManager.getFilesFromStorage("Images")) {
                 is FileResult.Success -> {
@@ -57,13 +59,17 @@ class OtherFilesViewModel @Inject constructor(
                     }
                 }
                 is FileResult.Error -> {
-                    analyticsManager.logError("Error obtiendo archivos desde storage: ${result.errorMessage}")
-                    sendUiEvent(UIEvent.ShowSnackbar(
-                        message = UIText.DynamicString(result.errorMessage))
+                    analyticsManager.logError("Error obteniendo archivos desde storage: ${result.error.detailedMessage}")
+                    state = state.copy(
+                        errorMessage = result.error.errorCode.issueStorageNetworkError()
                     )
                 }
             }
         }
+    }
+
+    private fun resetError() {
+        state = state.copy(errorMessage = null)
     }
 
     private fun sendUiEvent(event: UIEvent) {

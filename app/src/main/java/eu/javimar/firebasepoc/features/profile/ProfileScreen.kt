@@ -116,13 +116,13 @@ fun ProfileScreen(
                 fontSize = 14.sp
             )
             Text(
-                text = "Issued: ${convertEpochToDateTime(state.tokenInfo.issuedAt)}",
+                text = "First: ${convertEpochToDateTime(state.tokenInfo.authTime)}",
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 14.sp
             )
             Text(
-                text = "Auth: ${convertEpochToDateTime(state.tokenInfo.authTime)}",
+                text = "Issued: ${convertEpochToDateTime(state.tokenInfo.issuedAt)}",
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 14.sp
