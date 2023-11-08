@@ -2,9 +2,9 @@ package eu.javimar.firebasepoc.core.firebase
 
 import android.content.Context
 import android.os.Bundle
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import com.google.firebase.analytics.FirebaseAnalytics
+import eu.javimar.domain.analytics.model.MyCustomAnalyticsEvent
+import eu.javimar.domain.analytics.model.MyCustomAnalyticsParam
 
 class AnalyticsManager(context: Context) {
 
@@ -16,22 +16,9 @@ class AnalyticsManager(context: Context) {
 
     fun buttonClicked(buttonName: String) {
         val params = Bundle().apply {
-            putString("button_name", buttonName)
+            putString(MyCustomAnalyticsParam.BUTTON_NAME, buttonName)
         }
-        logEvent("button_clicked", params)
-    }
-
-    @Composable
-    fun LogScreenView(screenName: String) {
-        DisposableEffect(Unit) {
-            onDispose {
-                val params = Bundle().apply {
-                    putString(FirebaseAnalytics.Param.SCREEN_NAME, screenName)
-                    putString(FirebaseAnalytics.Param.SCREEN_CLASS, screenName)
-                }
-                logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, params)
-            }
-        }
+        logEvent(MyCustomAnalyticsEvent.BUTTON_CLICKED, params)
     }
 
     fun logScreenView(screenName: String) {
@@ -42,10 +29,10 @@ class AnalyticsManager(context: Context) {
         logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, params)
     }
 
-    fun logError(error: String) {
+    fun logError(errorName: String) {
         val params = Bundle().apply {
-            putString("error_name", error)
+            putString(MyCustomAnalyticsParam.ERROR_NAME, errorName)
         }
-        logEvent("errors_issued", params)
+        logEvent(MyCustomAnalyticsEvent.ERRORS_ISSUED, params)
     }
 }
