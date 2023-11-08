@@ -17,6 +17,7 @@ sealed class FileResult<out T> {
         private fun parseError(e: Exception): ErrorResponse {
             e.cause?.let {
                 try {
+                    //val errorJson = JSONObject(it.cause?.message.toString()).getJSONObject("error") works for upload errors :-(
                     val errorJson = JSONObject(it.message.toString()).getJSONObject("error")
                     val errorCode = getErrorCode(errorJson.getInt("code"))
                     val errorMessage = errorJson.getString("message")

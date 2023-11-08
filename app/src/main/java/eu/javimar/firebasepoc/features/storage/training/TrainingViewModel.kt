@@ -77,7 +77,7 @@ class TrainingViewModel @Inject constructor(
                     is FileResult.Error -> {
                         analyticsManager.logError("Error subiendo a storage: ${result.error.detailedMessage}")
                         state = state.copy(
-                            errorMessage = result.error.errorCode.issueStorageNetworkError()
+                            errorMessage = UIText.StringResource(R.string.storage_upload_ko)
                         )
                     }
                 }

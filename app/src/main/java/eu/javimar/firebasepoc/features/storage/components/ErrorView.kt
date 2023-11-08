@@ -3,7 +3,9 @@ package eu.javimar.firebasepoc.features.storage.components
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
@@ -25,7 +27,9 @@ fun ErrorView(
     color: Color? = null
 ) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -34,6 +38,7 @@ fun ErrorView(
             painter = drawable,
             color = color
         )
+        Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = text,
             textAlign = TextAlign.Center,

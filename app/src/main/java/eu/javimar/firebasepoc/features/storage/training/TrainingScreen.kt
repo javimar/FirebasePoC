@@ -70,7 +70,7 @@ fun TrainingScreen(
                 state.errorMessage != null -> {
                     ErrorView(
                         text = state.errorMessage.asString(),
-                        drawable = R.drawable.ic_restricted,
+                        drawable = R.drawable.ic_lock,
                         size = 96.dp,
                         color = MaterialTheme.colorScheme.error
                     )

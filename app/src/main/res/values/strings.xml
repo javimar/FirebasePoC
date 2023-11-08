@@ -10,6 +10,7 @@
 
     <!-- STORAGE -->
     <string name="storage_upload_ok">File uploaded</string>
+    <string name="storage_upload_ko">Cannot upload file</string>
     <string name="storage_no_elements_error">There are no files to show</string>
     <string name="storage_no_permission_error">You don\'t have permission to access this content. Please contact you administrator</string>
 
